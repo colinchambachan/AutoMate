@@ -1,35 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import "./App.css";
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col justify-center items-center bg-slate-200 gap-4">
+      <button className="bg-blue-500 rounded-full h-20 w-20 hover:bg-blue-700 transition ease-in-out">
+        <FontAwesomeIcon
+          icon={faMicrophone}
+          className="w-80p h-80p text-white"
+        />
+      </button>
+      <input
+        type="text"
+        className="border-2 hover:border-gray-400 rounded-lg p-2 transition ease-in-out"
+        placeholder="Type a command..."
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
