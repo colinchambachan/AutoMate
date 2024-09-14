@@ -2,15 +2,11 @@ import React from "react";
 import "./TypeBox.css";
 import TypeIcon from "./../assets/TypeIcon.png";
 
-const TypeBox = (props) => {
+const TypeBox = ({ value, isActive }) => {
   return (
-    <div className="type-box">
+    <div className={`type-box ${ isActive ? '' : 'processing'}`}>
       <img src={TypeIcon} alt="Type Icon" className="type-icon" />
-      <input
-        type="text"
-        className="type-input"
-        placeholder="Type your message..."
-      />
+      <input value={value} type="text" className="type-input" placeholder="Type your message..." />
     </div>
   );
 };
