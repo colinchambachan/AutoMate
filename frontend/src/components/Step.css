@@ -1,9 +1,8 @@
 .steps-view {
-    width: 293px;
     height: 291px;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     padding: 0px;
     position: relative;
   }
@@ -18,7 +17,7 @@
   }
   
   .step.active {
-    width: 293px;
+    width: 273px;
     left: 0px;
     top: 0px;
     padding: 18px;
