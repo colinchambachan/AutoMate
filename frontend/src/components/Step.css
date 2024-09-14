@@ -21,8 +21,8 @@
     left: 0px;
     top: 0px;
     padding: 18px;
-    background: #95CA42;
-    border: 1px solid #FFFFFF;
+    background: #194a7a;
+    border: 1px solid #d1dbe4;
     border-radius: 25px;
   }
   
@@ -52,11 +52,11 @@
   }
   
   .step.active .step-title {
-    color: #FFFFFF;
+    color: #fff;
   }
   
   .step:not(.active) .step-title {
-    color: rgba(255, 255, 255, 0.3);
+    color: #0b243d;
   }
   
   .step-desc {
@@ -72,11 +72,11 @@
   }
   
   .step.active .step-desc {
-    color: #FFFFFF;
+    color: #d1dbe4;
   }
   
   .step:not(.active) .step-desc {
-    color: rgba(255, 255, 255, 0.3);
+    color: #194a7a;
   }
   
   .step-button {
@@ -96,7 +96,7 @@
   
   .step.active .step-button {
     background: #E15062;
-    border: 2px solid #FFFFFF;
+    border: 2px solid #d1dbe4;
   }
   
   .step:not(.active) .step-button {

@@ -7,12 +7,12 @@ const MicrophoneButton = () => {
   const [isListening, setIsListening] = useState(false);
 
   const toggleListening = () => {
+    setIsListening(!isListening);
     if (!isListening){
       startRecording()
-    }else{
+    } else{
       stopRecording()
     }
-    setIsListening(!isListening);
   };
 
 
@@ -21,16 +21,13 @@ const MicrophoneButton = () => {
   const audioChunksRef = useRef([]);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
-  const silenceTimerRef = useRef(null);
+  const silenceTimeoutRef = useRef(null);
+  const silenceThreshold = 0.01; // Adjust this value to control sensitivity to silence
+  const silenceDelay = 3000; 
 
   const startRecording = () => {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
-        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-        const source = audioContextRef.current.createMediaStreamSource(stream);
-        analyserRef.current = audioContextRef.current.createAnalyser();
-        source.connect(analyserRef.current);
-
         mediaRecorderRef.current = new MediaRecorder(stream);
         mediaRecorderRef.current.ondataavailable = event => {
           audioChunksRef.current.push(event.data);
@@ -40,9 +37,16 @@ const MicrophoneButton = () => {
           sendAudioToAPI(audioBlob);
           audioChunksRef.current = [];
         };
-
         mediaRecorderRef.current.start();
         setRecording(true);
+
+        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContextRef.current.createMediaStreamSource(stream);
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        analyserRef.current.fftSize = 2048; 
+
+        source.connect(analyserRef.current);
+
         detectSilence();
       })
       .catch(err => console.error('Error accessing microphone:', err));
@@ -53,43 +57,46 @@ const MicrophoneButton = () => {
       mediaRecorderRef.current.stop();
       setRecording(false);
     }
-    if (silenceTimerRef.current) {
-      clearTimeout(silenceTimerRef.current);
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
     }
+    clearTimeout(silenceTimeoutRef.current);
   };
 
   const detectSilence = () => {
-    if (!analyserRef.current) return;
-
-    const bufferLength = analyserRef.current.frequencyBinCount;
+    const bufferLength = analyserRef.current.fftSize;
     const dataArray = new Uint8Array(bufferLength);
 
-    const checkSilence = () => {
-      analyserRef.current.getByteFrequencyData(dataArray);
-      const total = dataArray.reduce((acc, val) => acc + val, 0);
-      const average = total / dataArray.length;
-      console.log('total: ' + total)
-      console.log('average: ' + average)
+    const checkForSilence = () => {
+      analyserRef.current.getByteTimeDomainData(dataArray);
 
-      if (average < 10) { 
-        if (!silenceTimerRef.current) {
-          silenceTimerRef.current = setTimeout(() => {
+      let sumSquares = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        const normalizedValue = (dataArray[i] - 128) / 128;
+        sumSquares += normalizedValue * normalizedValue;
+      }
+      const rms = Math.sqrt(sumSquares / bufferLength);
+
+
+      if (rms < silenceThreshold) {
+        if (!silenceTimeoutRef.current) {
+          silenceTimeoutRef.current = setTimeout(() => {
             toggleListening();
-          }, 2000);
+            console.log('Current volume:', rms);
+          }, silenceDelay);
         }
       } else {
-        if (silenceTimerRef.current) {
-          clearTimeout(silenceTimerRef.current);
-          silenceTimerRef.current = null;
-        }
+        clearTimeout(silenceTimeoutRef.current);
+        silenceTimeoutRef.current = null;
       }
 
-      if (recording) {
-        requestAnimationFrame(checkSilence);
+      if (!isListening) {
+        requestAnimationFrame(checkForSilence);
       }
     };
 
-    checkSilence();
+    checkForSilence();
   };
 
 
@@ -98,19 +105,6 @@ const MicrophoneButton = () => {
     formData.append('file', audioBlob, 'recording.m4a');
     formData.append('model', 'distil-whisper-large-v3-en');
 
-    fetch('https://api.groq.com/openai/v1/audio/transcriptions', { 
-      method: 'POST',
-      body: formData,
-      headers: {
-        'model': "distil-whisper-large-v3-en",
-        'Authorization': 'Bearer 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', 
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Transcription:', data.text);
-    })
-    .catch(error => console.error('Error:', error));
   };
 
   return (
