@@ -17,10 +17,16 @@ let chatHistory = [];
 // {user: number, action: [string]}
 let actionsList = [];
 
-function generateActions(message) {}
+function generateActions(message, userId) {
+  cohere.chat();
+}
 
 app.get("/chat", async (req, res) => {
   const { message, userId } = req.query;
+
+  if (!message || !userId) {
+    return res.status(400).send("Missing required parameters");
+  }
 
   const action = actionsList?.find((action) => action.user === user);
   if (!action) {
@@ -33,7 +39,7 @@ app.get("/chat", async (req, res) => {
   try {
     const chatStream = await cohere.chatStream({
       chatHistory,
-      message: message ?? "Hello",
+      message: message,
       connectors: [{ id: "web-search" }],
     });
 
