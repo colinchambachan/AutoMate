@@ -44,10 +44,6 @@ const MainView = () => {
     setTextInput(newValue);
   };
 
-  const handleValueChange = (newValue) => {
-    setTextInput(newValue);
-  };
-
   useEffect(() => {
     if (output !== "") {
       document.body.style.width = "600px";
