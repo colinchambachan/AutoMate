@@ -1,6 +1,7 @@
 const axios = require("axios");
 const express = require("express");
 const { CohereClient } = require("cohere-ai");
+
 // Import the API key from the .env file
 require("dotenv").config();
 const apiKey = process.env.COHERE_API_KEY;
@@ -11,15 +12,20 @@ const cohere = new CohereClient({
 
 const app = express();
 
-app.listen(8000, async () => {
-  let respone = await cohere.checkApiKey();
+app.get("/chat", async (req, res) => {
+  const { message } = req.query;
 
-  console.log(respone);
-
-  console.log(`Server is running on port 8000.`);
-
-  response = await await cohere.chat({
-    message: "hello world!",
+  const response = await cohere.chat({
+    message: message,
   });
-  console.log(response);
+
+  res.status(200).json(response);
+});
+
+app.listen(8000, async () => {
+  let response = await cohere.checkApiKey();
+
+  if (!response.valid) throw new Error("Invalid API key");
+
+  console.log("Server is running at http://localhost:8000");
 });
