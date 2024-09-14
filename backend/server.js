@@ -68,8 +68,13 @@ app.get("/chat", async (req, res) => {
 
   console.log("actions", actions);
 
-  res.setHeader("Content-Type", "text/plain; charset=utf-8");
-  res.setHeader("Transfer-Encoding", "chunked");
+  // Set the correct headers for SSE
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  // Flush headers to establish SSE connection
+  res.flushHeaders();
 
   try {
     const chatStream = await cohere.chatStream({
@@ -83,7 +88,7 @@ app.get("/chat", async (req, res) => {
     // Stream the response to the client
     for await (const data of chatStream) {
       if (data.eventType === "text-generation") {
-        res.write(JSON.stringify(data));
+        res.write(data.text);
         aiResponse += data.text;
       }
     }

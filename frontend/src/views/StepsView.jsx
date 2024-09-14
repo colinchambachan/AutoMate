@@ -64,16 +64,14 @@ const MainView = () => {
       const response = await axios.get("http://localhost:8000/chat", {
         params: {
           userId: 13,
-          message: "hello",
+          message: "send an email to John using gmail",
         },
         responseType: "stream",
       });
 
       const stream = response.data;
       for await (const chunk of stream) {
-        console.log(chunk);
-        let temp = JSON.parse(chunk);
-        setChatContent((prev) => prev + temp.text);
+        setChatContent((prev) => prev + chunk);
       }
 
       console.log(3);
