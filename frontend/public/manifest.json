@@ -5,7 +5,7 @@
   "description": "A basic example extension with only required keys",
   "action": {
     "default_popup": "index.html"
-  }, 
+  },
   "background": {
     "service_worker": "background.js"
   },
@@ -15,24 +15,19 @@
     "storage",
     "audioCapture",
     "audio",
-    "microphone", 
+    "microphone",
     "tabs"
   ],
-    "host_permissions": [
-        "http://*/*",
-        "https://*/*"
-    ],
+  "host_permissions": ["http://*/*", "https://*/*"],
 
-    "background": {
+  "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],         
+      "matches": ["<all_urls>"],
       "js": ["contentScript.js"]
     }
   ],
-  "host_permissions": [
-    "<all_urls>" 
-  ]
+  "host_permissions": ["<all_urls>"]
 }
