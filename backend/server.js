@@ -14,8 +14,18 @@ const app = express();
 
 let chatHistory = [];
 
+// {user: number, action: [string]}
+let actionsList = [];
+
+function generateActions(message) {}
+
 app.get("/chat", async (req, res) => {
-  const { message } = req.query;
+  const { message, userId } = req.query;
+
+  const action = actionsList?.find((action) => action.user === user);
+  if (!action) {
+    generateActions(message, userId);
+  }
 
   res.setHeader("Content-Type", "text/plain; charset=utf-8");
   res.setHeader("Transfer-Encoding", "chunked");
@@ -23,7 +33,7 @@ app.get("/chat", async (req, res) => {
   try {
     const chatStream = await cohere.chatStream({
       chatHistory,
-      message,
+      message: message ?? "Hello",
       connectors: [{ id: "web-search" }],
     });
 
@@ -32,7 +42,7 @@ app.get("/chat", async (req, res) => {
     // Stream the response to the client
     for await (const data of chatStream) {
       if (data.eventType === "text-generation") {
-        res.write(data);
+        res.write(JSON.stringify(data));
         aiResponse += data;
       }
     }
