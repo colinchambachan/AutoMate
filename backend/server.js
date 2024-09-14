@@ -1,4 +1,3 @@
-const axios = require("axios");
 const express = require("express");
 const { CohereClient } = require("cohere-ai");
 
@@ -23,14 +22,16 @@ let actionsList = [];
  *
  * @param {string} message
  * @param {number} userId
+ * @param {string} currentURL
  * @returns {boolean}
  */
-async function generateActions(message, userId) {
+async function generateActions(message, userId, currentURL) {
   try {
     const response = await cohere.chat({
-      message: `Generate the detailed list of actions in JSON format you need to perform to acheive this final result
-      The format should be ["action1", "action2", ...] and each action should be a string.
-      Here is the final result: ${message}`,
+      message: `Generate a detailed, step-by-step list of minimal actions, formatted as an array of strings in JSON, that need to be performed in a browser to achieve the following final result. 
+Each action should be a simple string describing what to do. The final array should look like: ["action1", "action2", ...]. 
+Final result: ${message}
+Current page URL: ${currentURL}`,
     });
 
     actionsList.push({ userId, actions: JSON.parse(response.text) });
@@ -43,20 +44,17 @@ async function generateActions(message, userId) {
 }
 
 app.get("/chat", async (req, res) => {
-  const { message, userId } = req.query;
+  const { message, userId, htmlDOM, currentURL } = req.query;
 
-  //   let message = "send an email to John using gmail";
-  //   let userId = 1;
-
-  if (!message || !userId) {
+  if (!message || !userId || !htmlDOM || !currentURL) {
     return res.status(400).send("Missing required parameters");
   }
 
+  // Get the list of actions for the user
   let actions = actionsList?.find((action) => action.userId === userId);
 
   if (!actions || actions.length === 0) {
-    console.log("got here", message, userId);
-    const isGenerated = await generateActions(message, userId);
+    const isGenerated = await generateActions(message, userId, currentURL);
     if (!isGenerated) {
       return res
         .status(500)
@@ -65,8 +63,6 @@ app.get("/chat", async (req, res) => {
       actions = actionsList?.find((action) => action.userId === userId);
     }
   }
-
-  console.log("actions", actions);
 
   // Set the correct headers for SSE
   res.setHeader("Content-Type", "text/event-stream");
@@ -79,7 +75,48 @@ app.get("/chat", async (req, res) => {
   try {
     const chatStream = await cohere.chatStream({
       chatHistory,
-      message: actions.actions.shift(),
+      message: `Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
+        Setting the value of an input element (setValue), or
+        Clicking a button (click).
+
+        Each action object must have the following structure:
+        property: The DOM attribute that will be used to identify the element (e.g., aria-label, name, id, class).
+        value: The specific value of the attribute that uniquely identifies the element in the DOM.
+        tag: The HTML tag of the element (e.g., input, button).
+        action: Either "setValue" for input fields or "click" for buttons.
+        input (optional): If the action is setValue, this specifies the value to be inputted into the field.
+
+        Instructions for Action Creation:
+        For input fields:
+        Only include <input> elements that have the attributes aria-label, name, id, or placeholder.
+        The action should be "setValue".
+        The input field must contain the text to be entered into the input field (e.g., "CPEN 331").
+
+        For buttons:
+        Only include <button> elements that have the attributes aria-label, name, id, or class.
+        The action should be "click".
+
+        Expected Output Format:
+        The result should be a JSON Object, where each entry is an object structured like this:
+        [
+          {
+            property: "aria-label",
+            value: "Search mail",
+            tag: "input",
+            action: "setValue",
+            input: "CPEN 331",
+          },
+          {
+            property: "aria-label",
+            value: "Search mail",
+            tag: "button",
+            action: "click",
+          },
+        ]
+
+      Broswer Action: ${actions.actions.shift()}    
+      HTML DOM: ${htmlDOM}
+      `,
       connectors: [{ id: "web-search" }],
     });
 
@@ -92,6 +129,7 @@ app.get("/chat", async (req, res) => {
         aiResponse += data.text;
       }
     }
+    s;
 
     // End the response when done
     res.end();
