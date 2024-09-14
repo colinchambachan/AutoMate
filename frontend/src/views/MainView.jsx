@@ -65,6 +65,19 @@ const MainView = () => {
     });
   };
 
+  const getDOM = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      var activeTab = tabs[0];
+      chrome.tabs.sendMessage(
+        activeTab.id,
+        { action: "getDOMAndURL" },
+        (response) => {
+          console.log(response);
+        }
+      );
+    });
+  };
+
   console.log("test1");
 
   const handleValueChange = (newValue) => {
@@ -72,8 +85,8 @@ const MainView = () => {
   };
 
   useEffect(() => {
-    if (output == '') {
-      document.body.style.width = '800px';
+    if (output !== "") {
+      document.body.style.width = "800px";
     } else {
       document.body.style.width = "300px";
     }
@@ -81,12 +94,12 @@ const MainView = () => {
 
   return (
     <div className="container divide-x">
-      <div className="main-view" style={{flex: output != '' ? '0.375' : '1'}}>
-        <Button 
-          icon={isMuted ? VolumeOn : VolumeOff} 
-          altText="Mute" 
-          onClick={toggleMute} 
-          isActive={isMuted} 
+      <div className="main-view" style={{ flex: output != "" ? "0.375" : "1" }}>
+        <Button
+          icon={isMuted ? VolumeOn : VolumeOff}
+          altText="Mute"
+          onClick={toggleMute}
+          isActive={isMuted}
           isRight={false}
         />
         <Button
@@ -101,16 +114,20 @@ const MainView = () => {
         {/* TODO: delete */}
         <div>{chatContent}</div>
         <button onClick={() => aiCommmunicate("hello")}>test button</button>
-        <MicrophoneButton />
+        <MicrophoneButton value={textInput} onValueChange={handleValueChange} setIsProcessing={setIsProcessing}/>
+
+        <button className="w-5 h-4 bg-slate-100" onClick={getDOM}>
+          test
+        </button>
 
         <TypeBox
+          key={textInput}
           value={textInput}
           isActive={!isProcessing}
           onValueChange={handleValueChange}
         />
       </div>
-      <div className="w-2 bg-gray-300 h-full "></div>
-      <div className="steps-view" style={{display: output == '' ? 'block' : 'none'}}> 
+      <div className="steps-view" style={{display: output !== '' ? 'block' : 'none'}}> 
         {output}
       </div>
     </div>
