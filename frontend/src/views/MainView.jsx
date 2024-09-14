@@ -30,6 +30,10 @@ const MainView = () => {
     setIsListening(!isListening);
   };
 
+  const handleValueChange = (newValue) => {
+    setTextInput(newValue);
+  };
+
   return (
     <div className="main-view">
       <Button 
@@ -57,6 +61,7 @@ const MainView = () => {
       <TypeBox 
         value={textInput}
         isActive={!isProcessing} 
+        onValueChange={handleValueChange}
         />
 
     </div>
