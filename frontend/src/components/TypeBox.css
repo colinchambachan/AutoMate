@@ -5,7 +5,7 @@
     padding: 12px 17px;
     width: 300px;
     height: 50px;
-    background: #95CA42;
+    background: #194a7a;
     position: fixed;
     bottom: 0px;
   }
@@ -22,7 +22,7 @@
     font-weight: 500;
     margin-left: 8px;
     font-size: 12px;
-    color: #FFFFFF;
+    color: #fff;
     background: none;
     border: none;
     outline: none;
@@ -43,7 +43,7 @@
     left: -6px;
     right: -6px;
     bottom: -6px;
-    background: linear-gradient(45deg, #E15062, #95ca42, #4E80EE);
+    background: linear-gradient(45deg, #E15062, #194a7a, #4E80EE);
     z-index: -1;
     transition: all 0.3s ease;
     filter: blur(15px);

@@ -43,8 +43,8 @@
     width: 54px;
     height: 54px;
     border-radius: 40px;
-    background: #95CA42;
-    border: 2px solid #FFFFFF;
+    background: #194a7a;
+    border: 2px solid #d1dbe4;
     border-radius: 50%;
     transform: scale(1);
     transition: all 0.3s ease;
@@ -53,6 +53,7 @@
     background-color: transparent;
     transform: scale(1.15);
     transition: all 0.3s ease;
+    border: 2px solid #fff;
   }
   .microphone-button.listening::before {
     content: '';
@@ -62,7 +63,7 @@
     right: -6px;
     bottom: -6px;
     border-radius: 40px;
-    background: linear-gradient(45deg, #E15062, #95ca42, #4E80EE);
+    background: linear-gradient(45deg, #E15062, #194a7a, #4E80EE);
     z-index: -1;
     transition: all 0.3s ease;
     filter: blur(15px);
