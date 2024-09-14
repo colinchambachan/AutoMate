@@ -1,12 +1,16 @@
-import React from 'react';
-import './TypeBox.css';
+import React from "react";
+import "./TypeBox.css";
 import TypeIcon from "./../assets/TypeIcon.png";
 
-const TypeBox = () => {
+const TypeBox = (props) => {
   return (
     <div className="type-box">
       <img src={TypeIcon} alt="Type Icon" className="type-icon" />
-      <input type="text" className="type-input" placeholder="Type your message..." />
+      <input
+        type="text"
+        className="type-input"
+        placeholder="Type your message..."
+      />
     </div>
   );
 };
