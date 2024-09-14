@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  height: 700px;
+  height: 500px;
   width: 300px;
   overflow: hidden; 
   transition: width 0.5s ease; 

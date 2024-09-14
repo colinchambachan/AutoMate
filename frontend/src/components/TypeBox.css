@@ -8,6 +8,9 @@
     background: #194a7a;
     position: fixed;
     bottom: 0px;
+    transition: all 0.3s ease;
+    filter: blur(0);
+    opacity: 1;
   }
   
   .type-icon {

@@ -101,15 +101,15 @@ const MainView = () => {
         {/* TODO: delete */}
         <div>{chatContent}</div>
         <button onClick={() => aiCommmunicate("hello")}>test button</button>
-        <MicrophoneButton />
+        <MicrophoneButton value={textInput} onValueChange={handleValueChange} setIsProcessing={setIsProcessing}/>
 
         <TypeBox
+          key={textInput}
           value={textInput}
           isActive={!isProcessing}
           onValueChange={handleValueChange}
         />
       </div>
-      <div className="w-2 bg-gray-300 h-full "></div>
       <div className="steps-view" style={{display: output == '' ? 'block' : 'none'}}> 
         {output}
       </div>
