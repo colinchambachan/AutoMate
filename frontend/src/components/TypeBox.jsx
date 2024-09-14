@@ -7,7 +7,6 @@ const TypeBox = ({ value, onValueChange, isActive }) => {
 
   const handleChange = (event) => {
     setInputValue(event.target.value);
-    c;
     onValueChange(event.target.value);
   };
 

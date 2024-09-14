@@ -43,6 +43,10 @@ const MainView = () => {
     setTextInput(newValue);
   };
 
+  const handleValueChange = (newValue) => {
+    setTextInput(newValue);
+  };
+
   return (
     <div className="main-view">
       <Button
