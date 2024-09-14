@@ -1,5 +1,6 @@
 import React from 'react';
 import './Step.css';
+import RightArrow from "./../assets/RightArrow.png";
 
 const Step = ({ isActive, title, description }) => {
   return (
@@ -8,12 +9,7 @@ const Step = ({ isActive, title, description }) => {
         <div className="step-title">{title}</div>
         <div className="step-desc">{description}</div>
       </div>
-      <div className="step-button">
-        <div className="arrow-right" />
-        <div className="vector" />
-        <div className="vector" />
-        <div className="vector" />
-      </div>
+        <img src={RightArrow} className={`step-button`} />
     </div>
   );
 };
