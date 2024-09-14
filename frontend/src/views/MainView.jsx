@@ -39,6 +39,10 @@ const MainView = () => {
 
   console.log("test1");
 
+  const handleValueChange = (newValue) => {
+    setTextInput(newValue);
+  };
+
   return (
     <div className="main-view">
       <Button
@@ -60,7 +64,11 @@ const MainView = () => {
 
       <MicrophoneButton />
 
-      <TypeBox value={textInput} isActive={!isProcessing} />
+      <TypeBox
+        value={textInput}
+        isActive={!isProcessing}
+        onValueChange={handleValueChange}
+      />
     </div>
   );
 };
