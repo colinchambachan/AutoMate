@@ -10,7 +10,7 @@ import Profile from "./../components/Profile";
 import TypeBox from "./../components/TypeBox";
 import MicrophoneButton from "./../components/MicrophoneButton";
 import "./MainView.css";
-
+import axios from "axios";
 const MainView = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -18,7 +18,34 @@ const MainView = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [output, setOutput] = useState("");
+  const [chatContent, setChatContent] = useState("");
 
+  async function aiCommmunicate(chatPrompt) {
+    try {
+      const response = await axios.get("http://localhost:8000/chat", {
+        params: {
+          userId: 13,
+          message: chatPrompt,
+        },
+        responseType: "stream",
+      });
+
+      const stream = response.data;
+      // Buffer to accumulate chunks that are not complete JSON objects yet
+      // Loop through each chunk and display it character by character
+      for await (const chunk of stream) {
+        for (let i = 0; i < chunk.length; i++) {
+          // Delay to simulate typewriter effect
+          await new Promise((resolve) => setTimeout(resolve, 50)); // Adjust the delay for speed
+
+          // Update chat content with each new character
+          setChatContent((prev) => prev + chunk[i]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching chat data:", error);
+    }
+  }
   const toggleMute = () => {
     setIsMuted(!isMuted);
   };
@@ -71,7 +98,9 @@ const MainView = () => {
         />
 
         <Profile picture={Picture} name="Your Name" />
-
+        {/* TODO: delete */}
+        <div>{chatContent}</div>
+        <button onClick={() => aiCommmunicate("hello")}>test button</button>
         <MicrophoneButton />
 
         <TypeBox
