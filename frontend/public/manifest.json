@@ -5,9 +5,17 @@
   "description": "A basic example extension with only required keys",
   "action": {
     "default_popup": "index.html"
+  }, 
+  "background": {
+    "service_worker": "background.js"
   },
   "permissions": [
-    "scripting"
+    "activeTab",
+    "scripting",
+    "storage",
+    "audioCapture",
+    "audio",
+    "microphone"
   ],
     "host_permissions": [
         "http://*/*",

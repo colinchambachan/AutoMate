@@ -37,16 +37,16 @@ const MainView = () => {
 
 
   useEffect(() => {
-    if (output !== '') {
-      document.body.style.width = '600px';
+    if (output == '') {
+      document.body.style.width = '800px';
     } else {
       document.body.style.width = '300px';
     }
   }, [output]);
 
   return (
-    <div className="container">
-      <div className="main-view" style={{flex: output != '' ? '0.5' : '1'}}>
+    <div className="container divide-x">
+      <div className="main-view" style={{flex: output != '' ? '0.375' : '1'}}>
         <Button 
           icon={isMuted ? VolumeOn : VolumeOff} 
           altText="Mute" 
@@ -75,8 +75,8 @@ const MainView = () => {
           onValueChange={handleValueChange}
         />
       </div>
-
-      <div className="steps-view" style={{display: output !== '' ? 'block' : 'none'}}> 
+      <div className="w-2 bg-gray-300 h-full "></div>
+      <div className="steps-view" style={{display: output == '' ? 'block' : 'none'}}> 
         {output}
       </div>
     </div>
