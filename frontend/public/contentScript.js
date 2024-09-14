@@ -58,5 +58,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.action === "testChrome") {
     // Uncommented modular approach
     processActions(data);
+  } else if (message.action === "getDOMAndURL") {
+    const htmlDOM = document.documentElement.innerHTML;
+    const currentURL = window.location.href;
+    const resp = {
+      htmlDOM,
+      currentURL,
+    };
+    sendResponse(resp);
   }
+
+  return true;
 });

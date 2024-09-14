@@ -34,7 +34,7 @@ Final result: ${message}
 Current page URL: ${currentURL}`,
     });
 
-    actionsList.push({ userId, actions: JSON.parse(response.text) });
+    actionsList.push({ userId, actions: JSON.parse(response.text + ", DONE") });
     console.log("actionList", actionsList);
     return true;
   } catch (error) {
@@ -75,7 +75,8 @@ app.get("/chat", async (req, res) => {
   try {
     const chatStream = await cohere.chatStream({
       chatHistory,
-      message: `Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
+      message: `You are an AI assitant to help automate the navigation and completion of internet tasks. Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
+        Opening a new tab and directing to a url that you the model are required to define,
         Setting the value of an input element (setValue), or
         Clicking a button (click).
 
@@ -83,9 +84,10 @@ app.get("/chat", async (req, res) => {
         property: The DOM attribute that will be used to identify the element (e.g., aria-label, name, id, class).
         value: The specific value of the attribute that uniquely identifies the element in the DOM.
         tag: The HTML tag of the element (e.g., input, button).
-        action: Either "setValue" for input fields or "click" for buttons.
+        action: Either "newTab" for navigating to the page to complete the action, "setValue" for input fields or "click" for buttons.
+        url (absolutely required if action is "newTab"): describe the location to which the frontend should navigate to, ie the destination URL (e.g if sending an email, navigate to https://mail.google.com/")
         input (optional): If the action is setValue, this specifies the value to be inputted into the field.
-
+        
         Instructions for Action Creation:
         For input fields:
         Only include <input> elements that have the attributes aria-label, name, id, or placeholder.
@@ -97,8 +99,12 @@ app.get("/chat", async (req, res) => {
         The action should be "click".
 
         Expected Output Format:
-        The result should be a JSON Object, where each entry is an object structured like this:
+        The result should be a JSON Object, where each entry is an object structured like this (please note that the everything except the value of the "action" key are subject to change based on the context of the task):
         [
+          {
+            action: "newTab",
+            url: "https://mail.google.com/",
+          },
           {
             property: "aria-label",
             value: "Search mail",
