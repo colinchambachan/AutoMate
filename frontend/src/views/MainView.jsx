@@ -85,7 +85,7 @@ const MainView = () => {
   };
 
   useEffect(() => {
-    if (output == "") {
+    if (output !== "") {
       document.body.style.width = "800px";
     } else {
       document.body.style.width = "300px";
@@ -127,7 +127,7 @@ const MainView = () => {
           onValueChange={handleValueChange}
         />
       </div>
-      <div className="steps-view" style={{display: output == '' ? 'block' : 'none'}}> 
+      <div className="steps-view" style={{display: output !== '' ? 'block' : 'none'}}> 
         {output}
       </div>
     </div>
