@@ -1,0 +1,28 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define the microphone shape -->
+  <path id="microphone" d="M100 130V85a15 15 0 0 1 30 0v45h-30z" fill="black">
+    <animate attributeName="d"
+             from="M100 130V85a15 15 0 0 1 30 0v45h-30z"
+             to="M85 85a30 30 0 1 1 60 0a30 30 0 1 1 -60 0z"
+             dur="0.5s"
+             fill="freeze"
+             begin="click" />
+  </path>
+  
+  <!-- Define the pulsing circle -->
+  <circle id="pulse" cx="115" cy="100" r="30" fill="none" stroke="black" stroke-width="5" opacity="0">
+    <animate attributeName="opacity"
+             from="0" to="1"
+             dur="0.5s"
+             begin="click+0.5s"
+             fill="freeze"/>
+    <animate attributeName="r"
+             values="30;35;30"
+             dur="1s"
+             repeatCount="indefinite"
+             begin="click+0.5s"/>
+  </circle>
+  
+  <!-- Invisible clickable area for triggering animation -->
+  <rect width="200" height="200" fill="transparent" onclick=""/>
+</svg>
