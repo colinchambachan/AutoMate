@@ -36,7 +36,7 @@ const MainView = () => {
   const handleTest = () => {
     console.log("Sending message to background script");
 
-    chrome.runtime.sendMessage({ action: "testFunctionality" }, (response) => {
+    chrome.runtime.sendMessage({ action: "performTabAction" }, (response) => {
       if (chrome.runtime.lastError) {
         // Log if there was an error sending the message
         console.error(
