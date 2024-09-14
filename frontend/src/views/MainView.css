@@ -18,7 +18,7 @@
     box-shadow: 0px 5px 15px rgba(38, 10, 82, 0.5);
     padding-top: 30px;
     gap: 36px;
-    flex: 0.5; 
+    flex: 0.75; 
     padding: 20px;
     max-width: 300px;
   }
@@ -27,16 +27,17 @@
     text-align: left;
     padding-left: 20px;
     padding-right: 20px;
-    flex: 0.5; 
+    flex: 0.625; 
     padding: 20px;
     background-color: #f0f0f0; 
     overflow-y: auto; 
-    max-width: 300px;
+    max-width: 500px;
     overflow: auto;
+    animation: display 0.5s steps(1, jump-end);
   }
 
   .container {
     display: flex;
     height: 100vh; 
   }
-  
+
