@@ -70,8 +70,16 @@ const MainView = () => {
       });
 
       const stream = response.data;
+      // Buffer to accumulate chunks that are not complete JSON objects yet
+      // Loop through each chunk and display it character by character
       for await (const chunk of stream) {
-        setChatContent((prev) => prev + chunk);
+        for (let i = 0; i < chunk.length; i++) {
+          // Delay to simulate typewriter effect
+          await new Promise((resolve) => setTimeout(resolve, 50)); // Adjust the delay for speed
+
+          // Update chat content with each new character
+          setChatContent((prev) => prev + chunk[i]);
+        }
       }
 
       console.log(3);
