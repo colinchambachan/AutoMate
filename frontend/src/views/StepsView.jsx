@@ -16,6 +16,8 @@ const MainView = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [textInput, setTextInput] = useState('');
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -68,7 +70,10 @@ const MainView = () => {
         
       </div>
 
-      <TypeBox />
+      <TypeBox 
+        value={textInput}
+        isActive={!isProcessing} 
+        />
 
     </div>
   );
