@@ -18,6 +18,7 @@ const MainView = () => {
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [textInput, setTextInput] = useState("");
+  
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -54,6 +55,8 @@ const MainView = () => {
     });
   };
 
+  
+
   const handleValueChange = (newValue) => {
     setTextInput(newValue);
   };
@@ -78,7 +81,7 @@ const MainView = () => {
       <Profile picture={Picture} name="Your Name" />
 
       <MicrophoneButton />
-
+     
       <div className="steps-view">
         <Step
           isActive={true}
