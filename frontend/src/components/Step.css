@@ -1,0 +1,143 @@
+.steps-view {
+    width: 293px;
+    height: 291px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 0px;
+    position: relative;
+  }
+  
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 10px;
+    position: absolute;
+  }
+  
+  .step.active {
+    width: 293px;
+    height: 149px;
+    left: 0px;
+    top: 0px;
+    background: #95CA42;
+    border: 1px solid #FFFFFF;
+    border-radius: 20px;
+  }
+  
+  .step:not(.active) {
+    width: 273px;
+    height: 109px;
+    left: 10px;
+    top: 184px;
+    background: transparent;
+  }
+  
+  .step-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 10px;
+    width: 273px;
+  }
+  
+  .step-title {
+    width: 273px;
+    height: 29px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+  }
+  
+  .step.active .step-title {
+    color: #FFFFFF;
+  }
+  
+  .step:not(.active) .step-title {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .step-desc {
+    width: 273px;
+    height: 60px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0.08em;
+  }
+  
+  .step.active .step-desc {
+    color: #FFFFFF;
+  }
+  
+  .step:not(.active) .step-desc {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .step-button {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .step.active .step-button {
+    background: #E15062;
+    border: 2px solid #FFFFFF;
+  }
+  
+  .step:not(.active) .step-button {
+    background: rgba(225, 80, 98, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 99px;
+  }
+  
+  .arrow-right {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .vector {
+    position: absolute;
+    border: 2px solid #F8FCF3;
+  }
+  
+  .vector:nth-child(1) {
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+  }
+  
+  .vector:nth-child(2) {
+    left: 20.83%;
+    right: 20.83%;
+    top: 50%;
+    bottom: 50%;
+  }
+  
+  .vector:nth-child(3) {
+    left: 54.17%;
+    right: 20.83%;
+    top: 50%;
+    bottom: 25%;
+  }
+  
+  .vector:nth-child(4) {
+    left: 54.17%;
+    right: 20.83%;
+    top: 25%;
+    bottom: 50%;
+  }
+  
