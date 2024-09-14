@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import VolumeOff from "./../assets/VolumeOff.png";
 import VolumeOn from "./../assets/VolumeOn.png";
 import Settings from "./../assets/Settings.png";
@@ -17,6 +17,7 @@ const MainView = () => {
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [textInput, setTextInput] = useState('');
+  const [output, setOutput] = useState('');
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -34,36 +35,50 @@ const MainView = () => {
     setTextInput(newValue);
   };
 
+
+  useEffect(() => {
+    if (output !== '') {
+      document.body.style.width = '600px';
+    } else {
+      document.body.style.width = '300px';
+    }
+  }, [output]);
+
   return (
-    <div className="main-view">
-      <Button 
-        icon={isMuted ? VolumeOn : VolumeOff} 
-        altText="Mute" 
-        onClick={toggleMute} 
-        isActive={isMuted} 
-        isRight={false}
-      />
-      <Button 
-        icon={Settings} 
-        altText="Settings" 
-        onClick={toggleSettings} 
-        isActive={isSettingsOpen} 
-        isRight={true}
-      />
-
-      <Profile 
-        picture={Picture} 
-        name="Your Name" 
-      />
-
-      <MicrophoneButton />
-
-      <TypeBox 
-        value={textInput}
-        isActive={!isProcessing} 
-        onValueChange={handleValueChange}
+    <div className="container">
+      <div className="main-view" style={{flex: output != '' ? '0.5' : '1'}}>
+        <Button 
+          icon={isMuted ? VolumeOn : VolumeOff} 
+          altText="Mute" 
+          onClick={toggleMute} 
+          isActive={isMuted} 
+          isRight={false}
+        />
+        <Button 
+          icon={Settings} 
+          altText="Settings" 
+          onClick={toggleSettings} 
+          isActive={isSettingsOpen} 
+          isRight={true}
         />
 
+        <Profile 
+          picture={Picture} 
+          name="Your Name" 
+        />
+
+        <MicrophoneButton />
+
+        <TypeBox 
+          value={textInput}
+          isActive={!isProcessing} 
+          onValueChange={handleValueChange}
+        />
+      </div>
+
+      <div className="steps-view" style={{display: output !== '' ? 'block' : 'none'}}> 
+        {output}
+      </div>
     </div>
   );
 };
