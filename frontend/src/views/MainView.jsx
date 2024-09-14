@@ -11,23 +11,6 @@ import TypeBox from "./../components/TypeBox";
 import MicrophoneButton from "./../components/MicrophoneButton";
 import "./MainView.css";
 
-async function testFetch() {
-  try {
-    console.log("test");
-    const chatStream = await axios.get("http://localhost:8000/chat", {
-      params: {
-        message: "hello",
-      },
-    });
-    for await (const message of chatStream) {
-      if (message.eventType === "text-generation") {
-        process.stdout.write(message);
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching chat data:", error);
-  }
-}
 
 const MainView = () => {
   const [isMuted, setIsMuted] = useState(false);
@@ -61,6 +44,7 @@ const MainView = () => {
         isActive={isMuted}
         isRight={false}
       />
+      {/* <div className="chat-output">{"test mainview" + chatContent}</div> */}
       <Button
         icon={Settings}
         altText="Settings"
@@ -70,13 +54,7 @@ const MainView = () => {
       />
 
       <Profile picture={Picture} name="Your Name" />
-      <button
-        onClick={() => {
-          testFetch();
-        }}
-      >
-        test
-      </button>
+      
       <MicrophoneButton />
 
       <TypeBox
