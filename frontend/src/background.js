@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("Installed");
+  console.log("BG Installed");
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -7,6 +7,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === "testFunctionality") {
     console.log("Executing test functionality");
+
+    chrome.tabs.query({}, function (tabs) {
+      tabs.forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, { action: "extensionInstalled" });
+      });
+    });
 
     // Send a response back to the popup
     sendResponse({ status: "Functionality tested." });

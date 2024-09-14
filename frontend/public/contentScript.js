@@ -1,12 +1,6 @@
-    // src/contentScript.js
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'manipulateDOM') {
-    const element = document.body;
-    if (element) {
-      element.style.backgroundColor = "yellow"; // Change the background color
-      sendResponse({ status: "DOM Manipulated" });
-    } else {
-      sendResponse({ status: "Element not found" });
-    }
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "extensionInstalled") {
+    console.log("Extension Installed message received in content script");
+    // Perform actions based on this event in the content script context
   }
 });
