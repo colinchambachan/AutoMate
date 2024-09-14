@@ -105,6 +105,19 @@ const MicrophoneButton = () => {
     formData.append('file', audioBlob, 'recording.m4a');
     formData.append('model', 'distil-whisper-large-v3-en');
 
+    fetch('https://api.groq.com/openai/v1/audio/transcriptions', { 
+      method: 'POST',
+      body: formData,
+      headers: {
+        'model': "distil-whisper-large-v3-en",
+        'Authorization': 'Bearer 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', 
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Transcription:', data.text);
+    })
+    .catch(error => console.error('Error:', error));
   };
 
   return (
