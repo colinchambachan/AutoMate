@@ -15,8 +15,8 @@
     "storage",
     "audioCapture",
     "audio",
-    "microphone"
-    "tabs", 
+    "microphone", 
+    "tabs"
   ],
     "host_permissions": [
         "http://*/*",

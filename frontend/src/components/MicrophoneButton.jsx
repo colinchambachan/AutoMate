@@ -3,14 +3,22 @@ import Microphone from './../assets/Microphone.png';
 import ListeningWave from './../assets/ListeningWave.svg';
 import './MicrophoneButton.css';
 
-const MicrophoneButton = () => {
+const MicrophoneButton = ({ value, onValueChange, setIsProcessing }) => {
   const [isListening, setIsListening] = useState(false);
+  const [inputValue, setInputValue] = useState(value);
+
+  const handleChange = (event) => {
+    setInputValue(event);
+    onValueChange(event);
+  };
 
   const toggleListening = () => {
     setIsListening(!isListening);
     if (!isListening){
+      setIsProcessing(true)
       startRecording()
     } else{
+      setIsProcessing(false)
       stopRecording()
     }
   };
@@ -116,6 +124,7 @@ const MicrophoneButton = () => {
     .then(response => response.json())
     .then(data => {
       console.log('Transcription:', data.text);
+      handleChange(data.text);
     })
     .catch(error => console.error('Error:', error));
   };
