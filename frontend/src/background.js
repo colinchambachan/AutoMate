@@ -16,19 +16,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     // Send a response back to the popup
     sendResponse({ status: "Functionality tested." });
-  } else if (request.action === "performTabAction") {
+  } else if (request.action === "performAction") {
     // Toggle mute functionality
-    var newURL = "http://mail.google.com/";
-    chrome.tabs.create({ url: newURL });
 
-    setTimeout(() => {
+    if (request.perform.action === "newTab") {
+      chrome.tabs.create({ url: request.perform.url });
+    } else {
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         var currentTab = tabs[0]; // there will be only one in this array
         chrome.tabs.sendMessage(currentTab.id, {
-          action: "testChrome",
+          action: "interactElement",
+          request,
         });
       });
-    }, 2000);
+    }
   }
 
   // Return true to indicate you want to send an asynchronous response
