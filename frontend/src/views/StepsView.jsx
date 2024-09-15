@@ -32,10 +32,7 @@ const MainView = () => {
     setIsListening(!isListening);
   };
 
-  console.log("test1");
-
   const handleTest = () => {
-    console.log("Sending message to background script");
 
     chrome.runtime.sendMessage({ action: "performTabAction" }, (response) => {
       if (chrome.runtime.lastError) {
