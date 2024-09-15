@@ -59,6 +59,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Uncommented modular approach
     processActions(data);
   } else if (message.action === "getDOMAndURL") {
+    console.log("Message received from background script:");
     const htmlDOM = document.documentElement.innerHTML;
     const currentURL = window.location.href;
     const resp = {
