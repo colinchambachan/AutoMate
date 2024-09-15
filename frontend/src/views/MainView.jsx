@@ -164,10 +164,10 @@ const MainView = () => {
           isRight={true}
         />
 
-        <Profile picture={Picture} name="Your Name" />
+        <Profile picture={Picture} name="Grandma Suzy" />
         {/* TODO: delete */}
         <div>{chatContent}</div>
-        <button onClick={() => aiCommmunicate(textInput)}>test button</button>
+        {/* <button onClick={() => aiCommmunicate(textInput)}>test button</button> */}
         <MicrophoneButton
           value={textInput}
           onValueChange={handleValueChange}
@@ -175,12 +175,12 @@ const MainView = () => {
           promptSubmit={submitPrompt}
         />
 
-          <TypeBox
-            value={textInput}
-            isActive={!isProcessing}
-            onValueChange={handleValueChange}
-            promptSubmit={submitPrompt}
-          />
+        <TypeBox
+          value={textInput}
+          isActive={!isProcessing}
+          onValueChange={handleValueCha
+          promptSubmit={submitPrompt}
+        />
       </div>
       <div
         className="steps-view"

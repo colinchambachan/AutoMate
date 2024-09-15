@@ -18,10 +18,17 @@ const TypeBox = ({ value, onValueChange, isActive, promptSubmit }) => {
         value={value}
         type="text"
         className="type-input"
-        placeholder={isActive ? "Type your message..." : "Processing information..."}
+        placeholder={
+          isActive ? "Type your message..." : "Processing information..."
+        }
         onChange={handleChange}
       />
-      <img src={RightArrowIcon} alt="Submit Icon" className="submit-icon" onClick={promptSubmit} />
+      <img
+        src={RightArrowIcon}
+        alt="Submit Icon"
+        className="submit-icon cursor-pointer"
+        onClick={promptSubmit}
+      />
     </div>
   );
 };
