@@ -29,12 +29,12 @@ async function generateActions(message, userId, currentURL) {
   try {
     const response = await cohere.chat({
       message: `Generate a detailed, step-by-step list of minimal actions, formatted as an array of strings in JSON, that need to be performed in a browser to achieve the following final result. 
-Each action should be a simple string describing what to do. The final array should look like: ["action1", "action2", ...]. 
+Each action should be a simple string describing what to do. The final array should look like: ["action1", "action2", ...] and the last action should be "DONE". 
 Final result: ${message}
 Current page URL: ${currentURL}`,
     });
 
-    actionsList.push({ userId, actions: JSON.parse(response.text + ", DONE") });
+    actionsList.push({ userId, actions: JSON.parse(response.text) });
     console.log("actionList", actionsList);
     return true;
   } catch (error) {
@@ -75,7 +75,7 @@ app.get("/chat", async (req, res) => {
   try {
     const chatStream = await cohere.chatStream({
       chatHistory,
-      message: `You are an AI assitant to help automate the navigation and completion of internet tasks. Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
+      message: `Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
         Opening a new tab and directing to a url that you the model are required to define,
         Setting the value of an input element (setValue), or
         Clicking a button (click).
@@ -135,7 +135,6 @@ app.get("/chat", async (req, res) => {
         aiResponse += data.text;
       }
     }
-    s;
 
     // End the response when done
     res.end();
