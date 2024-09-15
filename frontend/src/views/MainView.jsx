@@ -225,7 +225,7 @@ const MainView = () => {
           isRight={true}
         />
 
-        <Profile picture={Picture} name="Grandma Suzy" />
+        <Profile picture={Picture} name="AutoMate" />
 
         <MicrophoneButton
           value={textInput}
