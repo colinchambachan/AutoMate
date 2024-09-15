@@ -29,7 +29,7 @@
     padding: 20px;
     background-color: #f0f0f0; 
     overflow-y: auto; 
-    max-width: 500px;
+    width: 500px;
     overflow: auto;
     animation: display 0.5s steps(1, jump-end);
     border-left: 2px solid grey;
