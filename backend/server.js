@@ -78,7 +78,7 @@ app.get("/chat", async (req, res) => {
       message: `Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
         Opening a new tab and directing to a url that you the model are required to define,
         Setting the value of an input element (setValue), or
-        Clicking a button (click).
+        Clicking a button (click). If you are not the right webpage, your first stpe would be a newTab action to the correct URL
 
         Each action object must have the following structure:
         property: The DOM attribute that will be used to identify the element (e.g., aria-label, name, id, class).
