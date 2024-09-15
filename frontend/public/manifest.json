@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Vite Extension",
+  "name": "autoMate",
   "version": "1.0.0",
-  "description": "A basic example extension with only required keys",
+  "description": "AI tool to help everyone navigate the internet",
   "action": {
     "default_popup": "index.html"
   },
@@ -19,7 +19,9 @@
     "tabs"
   ],
   "host_permissions": ["http://*/*", "https://*/*"],
-
+  "icons": {
+    "16": "logo.png"
+  },
   "background": {
     "service_worker": "background.js"
   },

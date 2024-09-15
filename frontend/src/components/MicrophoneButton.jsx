@@ -131,7 +131,7 @@ const MicrophoneButton = ({ value, onValueChange, setIsProcessing, promptSubmit 
   };
 
   return (
-    <div className={`microphone-button ${isListening ? 'listening' : ''}`} onClick={toggleListening}>
+    <div className={`microphone-button ${isListening ? 'listening' : ''} mt`} onClick={toggleListening}>
       <img
         src={isListening ? Microphone : Microphone}
         alt={isListening ? 'Listening' : 'Microphone'}
