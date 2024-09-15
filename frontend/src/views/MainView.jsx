@@ -18,7 +18,7 @@ const MainView = () => {
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [textInput, setTextInput] = useState("");
-  const [output, setOutput] = useState("");
+  // const [output, setOutput] = useState("");
   const [chatContent, setChatContent] = useState("");
   const [isFinishedGenerating, setIsFinishedGenerating] = useState(false);
 
@@ -137,7 +137,7 @@ const MainView = () => {
             await new Promise((resolve) => setTimeout(resolve, 20)); // Adjust the delay for speed
 
             // Update chat content with each new character
-            setOutput((prev) => prev + chunk[i]);
+            setChatContent((prev) => prev + chunk[i]);
           }
         }
         setIsFinishedGenerating(true);
@@ -199,16 +199,19 @@ const MainView = () => {
   };
 
   useEffect(() => {
-    if (output !== "") {
+    if (chatContent !== "") {
       document.body.style.width = "800px";
     } else {
       document.body.style.width = "300px";
     }
-  }, [output]);
+  }, [chatContent]);
 
   return (
     <div className="container divide-x">
-      <div className="main-view" style={{ flex: output != "" ? "0.375" : "1" }}>
+      <div
+        className="main-view"
+        style={{ flex: chatContent != "" ? "0.375" : "1" }}
+      >
         <Button
           icon={isMuted ? VolumeOn : VolumeOff}
           altText="Mute"
@@ -225,9 +228,7 @@ const MainView = () => {
         />
 
         <Profile picture={Picture} name="Grandma Suzy" />
-        {/* TODO: delete */}
-        <div>{chatContent}</div>
-        {/* <button onClick={() => aiCommmunicate(textInput)}>test button</button> */}
+
         <MicrophoneButton
           value={textInput}
           onValueChange={handleValueChange}
@@ -244,9 +245,9 @@ const MainView = () => {
       </div>
       <div
         className="steps-view"
-        style={{ display: output !== "" ? "block" : "none" }}
+        style={{ display: chatContent !== "" ? "block" : "none" }}
       >
-        {output}
+        {chatContent}
       </div>
     </div>
   );
