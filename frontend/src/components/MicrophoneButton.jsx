@@ -3,7 +3,7 @@ import Microphone from './../assets/Microphone.png';
 import ListeningWave from './../assets/ListeningWave.svg';
 import './MicrophoneButton.css';
 
-const MicrophoneButton = ({ value, onValueChange, setIsProcessing, promptSubmit }) => {
+const MicrophoneButton = ({ value, onValueChange, setIsProcessing, isProcessing, promptSubmit }) => {
   const [isListening, setIsListening] = useState(false);
   const [inputValue, setInputValue] = useState(value);
 
@@ -131,7 +131,7 @@ const MicrophoneButton = ({ value, onValueChange, setIsProcessing, promptSubmit 
   };
 
   return (
-    <div className={`microphone-button ${isListening ? 'listening' : ''} mt`} onClick={toggleListening}>
+    <div className={`microphone-button ${(isListening || isProcessing) ? 'listening' : ''} mt`} onClick={toggleListening}>
       <img
         src={isListening ? Microphone : Microphone}
         alt={isListening ? 'Listening' : 'Microphone'}

@@ -26,7 +26,7 @@ const TypeBox = ({ value, onValueChange, isActive, promptSubmit }) => {
       <img
         src={RightArrowIcon}
         alt="Submit Icon"
-        className="submit-icon cursor-pointer"
+        className={`submit-icon ${isActive ? 'cursor-pointer' : ''}`}
         onClick={promptSubmit}
       />
     </div>
