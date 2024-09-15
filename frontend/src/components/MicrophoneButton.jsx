@@ -15,11 +15,11 @@ const MicrophoneButton = ({ value, onValueChange, setIsProcessing }) => {
   const toggleListening = () => {
     setIsListening(!isListening);
     if (!isListening){
-      setIsProcessing(true)
       startRecording()
+      setIsProcessing(true)
     } else{
-      setIsProcessing(false)
       stopRecording()
+      setIsProcessing(false)
     }
   };
 

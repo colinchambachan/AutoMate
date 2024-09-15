@@ -14,10 +14,10 @@ const TypeBox = ({ value, onValueChange, isActive }) => {
     <div className={`type-box ${isActive ? "" : "processing"}`}>
       <img src={TypeIcon} alt="Type Icon" className="type-icon" />
       <input
-        value={inputValue}
+        value={value}
         type="text"
         className="type-input"
-        placeholder="Type your message..."
+        placeholder={isActive ? "Type your message..." : "Processing information..."}
         onChange={handleChange}
       />
     </div>

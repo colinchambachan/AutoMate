@@ -120,11 +120,11 @@ const MainView = () => {
           test
         </button>
 
-        <TypeBox
-          value={textInput}
-          isActive={!isProcessing}
-          onValueChange={handleValueChange}
-        />
+          <TypeBox
+            value={textInput}
+            isActive={!isProcessing}
+            onValueChange={handleValueChange}
+          />
       </div>
       <div className="steps-view" style={{display: output !== '' ? 'block' : 'none'}}> 
         {output}
