@@ -11,6 +11,7 @@ import TypeBox from "./../components/TypeBox";
 import MicrophoneButton from "./../components/MicrophoneButton";
 import "./MainView.css";
 import axios from "axios";
+
 const MainView = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -20,32 +21,103 @@ const MainView = () => {
   const [output, setOutput] = useState("");
   const [chatContent, setChatContent] = useState("");
 
-  async function aiCommmunicate(chatPrompt) {
-    try {
-      const response = await axios.get("http://localhost:8000/chat", {
-        params: {
-          userId: 13,
-          message: chatPrompt,
-        },
-        responseType: "stream",
-      });
-
-      const stream = response.data;
-      // Buffer to accumulate chunks that are not complete JSON objects yet
-      // Loop through each chunk and display it character by character
-      for await (const chunk of stream) {
-        for (let i = 0; i < chunk.length; i++) {
-          // Delay to simulate typewriter effect
-          await new Promise((resolve) => setTimeout(resolve, 50)); // Adjust the delay for speed
-
-          // Update chat content with each new character
-          setChatContent((prev) => prev + chunk[i]);
+  async function getHtmlDomAndUrl() {
+    return new Promise((resolve, reject) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (chrome.runtime.lastError) {
+          console.error("Error in tabs.query:", chrome.runtime.lastError);
+          reject(chrome.runtime.lastError);
+          return;
         }
+
+        const activeTab = tabs[0];
+        if (!activeTab) {
+          const error = new Error("No active tab found.");
+          console.error(error);
+          reject(error);
+          return;
+        }
+
+        chrome.tabs.sendMessage(
+          activeTab.id,
+          { action: "getDOMAndURL" },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              console.error("Error in sendMessage:", chrome.runtime.lastError);
+              reject(chrome.runtime.lastError);
+            } else if (!response) {
+              const error = new Error("No response from content script.");
+              console.error(error);
+              reject(error);
+            } else {
+              resolve(response);
+            }
+          }
+        );
+      });
+    });
+  }
+
+  async function aiCommmunicate(chatPrompt) {
+    while (true) {
+      // Make request to context API to get HTML DOM and URL
+      let htmlDOM = "";
+      let currentURL = "";
+
+      console.log("got here");
+
+      const res = await getHtmlDomAndUrl();
+
+      console.log("res", res);
+
+      if (res) {
+        htmlDOM = res.htmlDOM;
+        currentURL = res.currentURL;
+      } else {
+        console.error("Error getting htmlDOM and currentURL");
+        break;
       }
-    } catch (error) {
-      console.error("Error fetching chat data:", error);
+
+      try {
+        const response = await axios.get("http://localhost:8000/chat", {
+          params: {
+            userId: 13,
+            message: chatPrompt,
+            htmlDOM,
+            currentURL,
+          },
+          responseType: "stream",
+        });
+
+        const stream = response.data;
+        // Buffer to accumulate chunks that are not complete JSON objects yet
+        // Loop through each chunk and display it character by character
+        for await (const chunk of stream) {
+          for (let i = 0; i < chunk.length; i++) {
+            // Delay to simulate typewriter effect
+            await new Promise((resolve) => setTimeout(resolve, 20)); // Adjust the delay for speed
+
+            // Update chat content with each new character
+            setChatContent((prev) => prev + chunk[i]);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching chat data:", error);
+        break;
+      }
+
+      if (chatPrompt == "DONE") {
+        break;
+      }
+
+      // Perform the action on the runtime
+      chrome.runtime.sendMessage({
+        action: "performActions",
+        actions: chatContent,
+      });
     }
   }
+
   const toggleMute = () => {
     setIsMuted(!isMuted);
   };
@@ -57,28 +129,6 @@ const MainView = () => {
   const toggleListening = () => {
     setIsListening(!isListening);
   };
-
-  const handleTest = () => {
-    console.log("test");
-    chrome.runtime.sendMessage({ action: "testFunctionality" }, (response) => {
-      console.log(response.status);
-    });
-  };
-
-  const getDOM = () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      var activeTab = tabs[0];
-      chrome.tabs.sendMessage(
-        activeTab.id,
-        { action: "getDOMAndURL" },
-        (response) => {
-          console.log(response);
-        }
-      );
-    });
-  };
-
-  console.log("test1");
 
   const handleValueChange = (newValue) => {
     setTextInput(newValue);
@@ -113,12 +163,12 @@ const MainView = () => {
         <Profile picture={Picture} name="Your Name" />
         {/* TODO: delete */}
         <div>{chatContent}</div>
-        <button onClick={() => aiCommmunicate("hello")}>test button</button>
-        <MicrophoneButton value={textInput} onValueChange={handleValueChange} setIsProcessing={setIsProcessing}/>
-
-        <button className="w-5 h-4 bg-slate-100" onClick={getDOM}>
-          test
-        </button>
+        <button onClick={() => aiCommmunicate(textInput)}>test button</button>
+        <MicrophoneButton
+          value={textInput}
+          onValueChange={handleValueChange}
+          setIsProcessing={setIsProcessing}
+        />
 
           <TypeBox
             value={textInput}
@@ -126,7 +176,10 @@ const MainView = () => {
             onValueChange={handleValueChange}
           />
       </div>
-      <div className="steps-view" style={{display: output !== '' ? 'block' : 'none'}}> 
+      <div
+        className="steps-view"
+        style={{ display: output !== "" ? "block" : "none" }}
+      >
         {output}
       </div>
     </div>
