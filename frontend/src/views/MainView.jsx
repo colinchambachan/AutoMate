@@ -121,7 +121,6 @@ const MainView = () => {
         </button>
 
         <TypeBox
-          key={textInput}
           value={textInput}
           isActive={!isProcessing}
           onValueChange={handleValueChange}
