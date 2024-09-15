@@ -32,7 +32,6 @@
       transform-origin: 50% 50%;
     }
   }
-  
   .microphone-button {
     display: flex;
     justify-content: center;
@@ -42,13 +41,14 @@
     gap: 10px;
     width: 54px;
     height: 54px;
-    border-radius: 40px;
+    border-radius: 50%;
     background: #194a7a;
     border: 2px solid #d1dbe4;
-    border-radius: 50%;
     transform: scale(1);
     transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(25, 74, 122, 0.3); /* Drop shadow */
   }
+  
   .microphone-button.listening {
     background-color: transparent;
     transform: scale(1.15);

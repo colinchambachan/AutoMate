@@ -137,7 +137,7 @@ const MainView = () => {
             await new Promise((resolve) => setTimeout(resolve, 20)); // Adjust the delay for speed
 
             // Update chat content with each new character
-            setChatContent((prev) => prev + chunk[i]);
+            setOutput((prev) => prev + chunk[i]);
           }
         }
         setIsFinishedGenerating(true);
@@ -238,7 +238,7 @@ const MainView = () => {
         <TypeBox
           value={textInput}
           isActive={!isProcessing}
-          onValueChange={handleValueCha
+          onValueChange={handleValueChange}
           promptSubmit={submitPrompt}
         />
       </div>
