@@ -102,8 +102,6 @@ const MainView = () => {
 
       const res = await getHtmlDomAndUrl();
 
-      console.log("res", res);
-
       if (res) {
         htmlDOM = res.htmlDOM;
         currentURL = res.currentURL;
@@ -112,7 +110,6 @@ const MainView = () => {
         break;
       }
       let cleanedHtmlDom = cleanHtmlDom(htmlDOM);
-      console.log("cleanedHtmlDom", cleanedHtmlDom);
       try {
         setIsFinishedGenerating(false);
         const response = await axios.post(
@@ -140,39 +137,42 @@ const MainView = () => {
             setChatContent((prev) => prev + chunk[i]);
           }
         }
+
+        setIsProcessing(false);
         setIsFinishedGenerating(true);
         setIsProcessing(false);
       } catch (error) {
+        setIsProcessing(false);
         setIsFinishedGenerating(false);
         console.error("Error fetching chat data:", error);
         break;
       }
 
       if (chatPrompt == "DONE") {
+        console.log("DONE Operation!!!!!!!!!");
         break;
       }
     }
   }
 
   useEffect(() => {
+    async function wait() {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
     if (!isFinishedGenerating || !chatContent || chatContent === "") return;
-
-    console.log("chatContent", chatContent);
 
     // Perform the action on the runtime
     try {
       const actions = JSON.parse(chatContent);
 
-      console.log("actions", actions);
-
       for (const act of actions) {
-        console.log("act", act);
         chrome.runtime.sendMessage({
           action: "performAction",
           perform: act,
         });
       }
       setChatContent("");
+      wait();
     } catch (e) {
       setChatContent("");
       return;
@@ -185,10 +185,6 @@ const MainView = () => {
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
-  };
-
-  const toggleListening = () => {
-    setIsListening(!isListening);
   };
 
   const handleValueChange = (newValue) => {

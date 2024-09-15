@@ -16,21 +16,9 @@ const findElementAndSetValue = (property, value, tag, text) => {
   }
 };
 
-const processAction = (data) => {
-  console.log("Processing action:", data);
-  if (data.action === "click") {
-    findElementAndClick(data.property, data.value, data.tag);
-  } else if (data.action === "setValue") {
-    findElementAndSetValue(data.property, data.value, data.tag, data.input);
-  }
-};
-
 // Listener function
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("i want to kermit sewer side");
-  if (message.action === "extensionInstalled") {
-    console.log("Extension Installed message received in content script");
-  } else if (message.action === "interactElement") {
+  if (message.action === "interactElement") {
     const data = message.request.perform;
     if (data.action === "click") {
       findElementAndClick(data.property, data.value, data.tag);
