@@ -10,8 +10,9 @@ const cohere = new CohereClient({
 });
 
 const app = express();
+app.use(express.json({ limit: "50mb" }));
 
-let chatHistory = [];
+// let chatHistory = [];
 
 // {user: number, actions: [string]} (NOTE ACTIONS IS A LIST OF STRINGS)
 let actionsList = [];
@@ -28,12 +29,14 @@ let actionsList = [];
 async function generateActions(message, userId, currentURL) {
   try {
     const response = await cohere.chat({
-      message: `Generate a detailed, step-by-step list of minimal actions, formatted as an array of strings in JSON, that need to be performed in a browser to achieve the following final result. 
-Each action should be a simple string describing what to do. The final array should look like: ["action1", "action2", ...] and the last action should be "DONE". 
+      message: `Generate a detailed, list of actions, formatted as an array of strings in JSON (NOT IN MARKDOWN), that need to be performed in a browser to achieve the following final result. 
+Each action should be a simple string describing what to do. The final array should look like: ["action1", "action2", ..., "DONE"]. Note that the final action MUST be "DONE". 
+For example, if the final result is to send an email, the actions might be ["Open Gmail", "Click Compose", "Fill in recipient", "Fill in subject", "Fill in body", "Click Send", "DONE"].
 Final result: ${message}
 Current page URL: ${currentURL}`,
     });
 
+    console.log("response", response.text);
     actionsList.push({ userId, actions: JSON.parse(response.text) });
     console.log("actionList", actionsList);
     return true;
@@ -43,8 +46,8 @@ Current page URL: ${currentURL}`,
   }
 }
 
-app.get("/chat", async (req, res) => {
-  const { message, userId, htmlDOM, currentURL } = req.query;
+app.post("/chat", async (req, res) => {
+  const { message, userId, htmlDOM, currentURL } = req.body;
 
   if (!message || !userId || !htmlDOM || !currentURL) {
     return res.status(400).send("Missing required parameters");
@@ -53,7 +56,7 @@ app.get("/chat", async (req, res) => {
   // Get the list of actions for the user
   let actions = actionsList?.find((action) => action.userId === userId);
 
-  if (!actions || actions.length === 0) {
+  if (!actions) {
     const isGenerated = await generateActions(message, userId, currentURL);
     if (!isGenerated) {
       return res
@@ -74,8 +77,8 @@ app.get("/chat", async (req, res) => {
 
   try {
     const chatStream = await cohere.chatStream({
-      chatHistory,
-      message: `Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
+      // chatHistory,
+      message: `Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to:
         Opening a new tab and directing to a url that you the model are required to define,
         Setting the value of an input element (setValue), or
         Clicking a button (click). If you are not the right webpage, your first stpe would be a newTab action to the correct URL
@@ -102,22 +105,25 @@ app.get("/chat", async (req, res) => {
         The result should be a JSON Object, where each entry is an object structured like this (please note that the everything except the value of the "action" key are subject to change based on the context of the task):
         [
           {
-            action: "newTab",
-            url: "https://mail.google.com/",
+            "action": "newTab",
+            "url": "https://mail.google.com/"
           },
-          {
-            property: "aria-label",
-            value: "Search mail",
-            tag: "input",
-            action: "setValue",
-            input: "CPEN 331",
-          },
-          {
-            property: "aria-label",
-            value: "Search mail",
-            tag: "button",
-            action: "click",
-          },
+        ]
+        OR
+        [
+        {
+            "property": "aria-label",
+            "value": "Search mail",
+            "tag": "input",
+            "input": "CPEN 331",
+            "action": "setValue"
+        }, 
+        {
+            "property": "aria-label",
+            "value": "Search mail",
+            "tag": "button",
+            "action": "click"
+          }
         ]
 
       Broswer Action: ${actions.actions.shift()}    
@@ -140,9 +146,9 @@ app.get("/chat", async (req, res) => {
     res.end();
 
     // Add the user and chatbot messages to the chat history
-    chatHistory.push({ role: "USER", message });
-    chatHistory.push({ role: "CHATBOT", message: aiResponse });
-    console.log("chatHistory", chatHistory);
+    // chatHistory.push({ role: "USER", message });
+    // chatHistory.push({ role: "CHATBOT", message: aiResponse });
+    // console.log("chatHistory", chatHistory);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("An error occurred while processing your request.");

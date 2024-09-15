@@ -1,19 +1,3 @@
-const data = [
-  {
-    property: "aria-label",
-    value: "Search mail",
-    tag: "input",
-    action: "setValue",
-    input: "CPEN 331",
-  },
-  {
-    property: "aria-label",
-    value: "Search mail",
-    tag: "button",
-    action: "click",
-  },
-];
-
 const findElementAndClick = (property, value, tag) => {
   let element = document.querySelector(`${tag}[${property}="${value}"]`);
   if (element) {
@@ -32,26 +16,8 @@ const findElementAndSetValue = (property, value, tag, text) => {
   }
 };
 
-const processActions = (data) => {
-  let x = 0;
-  data.forEach((element) => {
-    setTimeout(() => {
-      if (element.action === "click") {
-        findElementAndClick(element.property, element.value, element.tag);
-      } else if (element.action === "setValue") {
-        findElementAndSetValue(
-          element.property,
-          element.value,
-          element.tag,
-          element.input
-        );
-      }
-    }, 3000 + 1000 * x); // Increment the timeout to simulate sequential actions
-    x += 1;
-  });
-};
-
 const processAction = (data) => {
+  console.log("Processing action:", data);
   if (data.action === "click") {
     findElementAndClick(data.property, data.value, data.tag);
   } else if (data.action === "setValue") {
@@ -61,13 +27,19 @@ const processAction = (data) => {
 
 // Listener function
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("i want to kermit sewer side");
   if (message.action === "extensionInstalled") {
     console.log("Extension Installed message received in content script");
   } else if (message.action === "interactElement") {
-    processAction(data.perform);
+    const data = message.request.perform;
+    if (data.action === "click") {
+      findElementAndClick(data.property, data.value, data.tag);
+    } else if (data.action === "setValue") {
+      findElementAndSetValue(data.property, data.value, data.tag, data.input);
+    }
   } else if (message.action === "getDOMAndURL") {
     console.log("Message received from background script:");
-    const htmlDOM = document.documentElement.innerHTML;
+    const htmlDOM = document.body.innerHTML;
     const currentURL = window.location.href;
     const resp = {
       htmlDOM,
@@ -78,3 +50,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   return true;
 });
+
+/**
+ *     findElementAndSetValue(
+      "aria-label",
+      "Search mail",
+      "input",
+      "setValue",
+      `input: ${message.perform.input}, property ${message.perform.property}, value: ${message.perform.value},tag: ${message.perform.tag}`
+    );
+ * 
+ */
