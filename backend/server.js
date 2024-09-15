@@ -76,7 +76,7 @@ app.get("/chat", async (req, res) => {
     const chatStream = await cohere.chatStream({
       chatHistory,
       message: `Given a valid HTML DOM, generate a sequence of actions structured as JSON JavaScript object where each action corresponds to either:
-        Opening a new tab and directing to a url that you the model are required to define,
+        Opening a new tab and directing to a url that you the model are required to define (once you execute this command the new DOM you will receive will be from that page),
         Setting the value of an input element (setValue), or
         Clicking a button (click). If you are not the right webpage, your first stpe would be a newTab action to the correct URL
 
