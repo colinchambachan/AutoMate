@@ -51,13 +51,20 @@ const processActions = (data) => {
   });
 };
 
+const processAction = (data) => {
+  if (data.action === "click") {
+    findElementAndClick(data.property, data.value, data.tag);
+  } else if (data.action === "setValue") {
+    findElementAndSetValue(data.property, data.value, data.tag, data.input);
+  }
+};
+
 // Listener function
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "extensionInstalled") {
     console.log("Extension Installed message received in content script");
-  } else if (message.action === "testChrome") {
-    // Uncommented modular approach
-    processActions(data);
+  } else if (message.action === "interactElement") {
+    processAction(data.perform);
   } else if (message.action === "getDOMAndURL") {
     console.log("Message received from background script:");
     const htmlDOM = document.documentElement.innerHTML;
