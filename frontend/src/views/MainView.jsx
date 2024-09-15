@@ -20,6 +20,7 @@ const MainView = () => {
   const [textInput, setTextInput] = useState("");
   const [output, setOutput] = useState("");
   const [chatContent, setChatContent] = useState("");
+  const [isFinishedGenerating, setIsFinishedGenerating] = useState(false);
 
   async function getHtmlDomAndUrl() {
     return new Promise((resolve, reject) => {
@@ -58,13 +59,46 @@ const MainView = () => {
     });
   }
 
+  function cleanHtmlDom(htmlString) {
+    // Parse the HTML string into a DOM object
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+
+    // Remove unwanted tags: <script>, <style>, <link>, <iframe>, <svg>, <img>
+    const elementsToRemove = [
+      "script",
+      "style",
+      "link",
+      "iframe",
+      "svg",
+      "img",
+    ];
+    elementsToRemove.forEach((tag) => {
+      const elements = doc.querySelectorAll(tag);
+      elements.forEach((element) => element.remove());
+    });
+
+    // Remove inline styles
+    doc
+      .querySelectorAll("[style]")
+      .forEach((element) => element.removeAttribute("style"));
+
+    // Remove class attributes
+    doc
+      .querySelectorAll("[class]")
+      .forEach((element) => element.removeAttribute("class"));
+
+    // Serialize the cleaned DOM back into a string
+    const cleanedHtmlString = doc.documentElement.outerHTML;
+
+    return cleanedHtmlString;
+  }
+
   async function aiCommmunicate(chatPrompt) {
     while (true) {
       // Make request to context API to get HTML DOM and URL
       let htmlDOM = "";
       let currentURL = "";
-
-      console.log("got here");
 
       const res = await getHtmlDomAndUrl();
 
@@ -77,17 +111,22 @@ const MainView = () => {
         console.error("Error getting htmlDOM and currentURL");
         break;
       }
-
+      let cleanedHtmlDom = cleanHtmlDom(htmlDOM);
+      console.log("cleanedHtmlDom", cleanedHtmlDom);
       try {
-        const response = await axios.get("http://localhost:8000/chat", {
-          params: {
+        setIsFinishedGenerating(false);
+        const response = await axios.post(
+          "http://localhost:8000/chat",
+          {
             userId: 13,
             message: chatPrompt,
-            htmlDOM,
+            htmlDOM: cleanedHtmlDom,
             currentURL,
           },
-          responseType: "stream",
-        });
+          {
+            responseType: "stream",
+          }
+        );
 
         const stream = response.data;
         // Buffer to accumulate chunks that are not complete JSON objects yet
@@ -101,7 +140,9 @@ const MainView = () => {
             setChatContent((prev) => prev + chunk[i]);
           }
         }
+        setIsFinishedGenerating(true);
       } catch (error) {
+        setIsFinishedGenerating(false);
         console.error("Error fetching chat data:", error);
         break;
       }
@@ -109,14 +150,33 @@ const MainView = () => {
       if (chatPrompt == "DONE") {
         break;
       }
-
-      // Perform the action on the runtime
-      chrome.runtime.sendMessage({
-        action: "performActions",
-        actions: chatContent,
-      });
     }
   }
+
+  useEffect(() => {
+    if (!isFinishedGenerating || !chatContent || chatContent === "") return;
+
+    console.log("chatContent", chatContent);
+
+    // Perform the action on the runtime
+    try {
+      const actions = JSON.parse(chatContent);
+
+      console.log("actions", actions);
+
+      for (const act of actions) {
+        console.log("act", act);
+        chrome.runtime.sendMessage({
+          action: "performAction",
+          perform: act,
+        });
+      }
+      setChatContent("");
+    } catch (e) {
+      setChatContent("");
+      return;
+    }
+  }, [isFinishedGenerating, chatContent]);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
