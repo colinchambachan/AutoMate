@@ -3,7 +3,7 @@ import Microphone from './../assets/Microphone.png';
 import ListeningWave from './../assets/ListeningWave.svg';
 import './MicrophoneButton.css';
 
-const MicrophoneButton = ({ value, onValueChange, setIsProcessing }) => {
+const MicrophoneButton = ({ value, onValueChange, setIsProcessing, promptSubmit }) => {
   const [isListening, setIsListening] = useState(false);
   const [inputValue, setInputValue] = useState(value);
 
@@ -20,6 +20,7 @@ const MicrophoneButton = ({ value, onValueChange, setIsProcessing }) => {
     } else{
       stopRecording()
       setIsProcessing(false)
+      promptSubmit()
     }
   };
 

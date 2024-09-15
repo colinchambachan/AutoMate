@@ -134,6 +134,10 @@ const MainView = () => {
     setTextInput(newValue);
   };
 
+  const submitPrompt = () => {
+    aiCommmunicate(textInput);
+  };
+
   useEffect(() => {
     if (output !== "") {
       document.body.style.width = "800px";
@@ -168,12 +172,14 @@ const MainView = () => {
           value={textInput}
           onValueChange={handleValueChange}
           setIsProcessing={setIsProcessing}
+          promptSubmit={submitPrompt}
         />
 
           <TypeBox
             value={textInput}
             isActive={!isProcessing}
             onValueChange={handleValueChange}
+            promptSubmit={submitPrompt}
           />
       </div>
       <div
